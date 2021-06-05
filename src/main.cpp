@@ -8,6 +8,7 @@
 #include <iostream>
 #include <limits> // std::numeric_limits
 #include <vector>
+#include <filesystem>
 
 #include "LZMA/Alloc.h" // g_Alloc
 #include "LZMA/LzmaDec.h"
@@ -144,7 +145,11 @@ auto main(int argc, char* argv[]) -> int
 	}();
 	size_t msg_buffer_size = pth_buf.size() - (ptr_to_msgs - pth_buf.data());
 	auto const replay_bin = analyze(ptr_to_msgs, msg_buffer_size);
-	std::fstream{std::string{argv[1]} + ".pb",
+
+	std::filesystem::path outfile = std::filesystem::current_path() / (std::string{argv[1]} + ".pb");
+	std::cout << "writing to:" << outfile << "\n";
+	//std::fstream{std::string{argv[1]} + ".pb",
+	std::fstream{outfile,
 	             std::ios_base::binary | std::ios_base::out}
 		<< replay_bin;
 	return 0;
